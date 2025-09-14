@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -265,7 +265,7 @@ export interface SessionManagementResult {
     <div class="manual-audit-container">
       <div class="audit-header">
         <div class="header-content">
-          <h1 class="page-title">Audit de Sécurité Manuel</h1>
+          <h1 class="page-title" [class.dark-title]="isDarkMode">Audit de Sécurité Manuel</h1>
           <p class="page-subtitle">Tests de sécurité manuels complets pour applications web</p>
         </div>
       </div>
@@ -1749,10 +1749,12 @@ export interface SessionManagementResult {
       font-weight: 700;
       margin: 0 0 0.5rem 0;
       line-height: 1.2;
-      background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #000000; /* Noir en mode clair */
+    }
+    
+    /* Classe pour le mode sombre */
+    .dark-title {
+      color: #ffffff !important; /* Blanc en mode sombre */
     }
 
     .page-subtitle {
@@ -3209,12 +3211,13 @@ export interface SessionManagementResult {
     }
   `]
 })
-export class ManualAuditComponent {
+export class ManualAuditComponent implements OnInit {
   private http = inject(HttpClient);
   
   targetUrl = '';
   hasRunAudit = false;
   isAuditing = signal(false);
+  isDarkMode = false;
   auditResults = signal<ManualTest[]>([]);
   formValidationResult = signal<FormValidationResult | null>(null);
   authenticationResult = signal<AuthenticationResult | null>(null);
@@ -4921,5 +4924,20 @@ export class ManualAuditComponent {
     const result = this.sslTlsResult();
     if (!result) return 0;
     return result.details?.tlsProtocols?.supported?.length || 0;
+  }
+
+  ngOnInit() {
+    this.detectTheme();
+  }
+
+  private detectTheme() {
+    // Détecter le thème sombre
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                   document.body.classList.contains('dark') ||
+                   document.documentElement.classList.contains('dark') ||
+                   window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    this.isDarkMode = isDark;
+    console.log('Theme detected:', isDark ? 'dark' : 'light'); // Debug
   }
 }

@@ -11,6 +11,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/auth.models';
 
@@ -28,7 +30,9 @@ import { LoginRequest } from '../../../core/models/auth.models';
     MatCheckboxModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatCardModule
+    MatCardModule,
+    MatRadioModule,
+    MatSelectModule
   ],
   template: `
     <div class="auth-container">
@@ -152,28 +156,98 @@ import { LoginRequest } from '../../../core/models/auth.models';
 
         <!-- Register Form -->
         <form *ngIf="showRegisterForm" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()" class="login-form">
-          <!-- Username Field -->
-          <div class="input-group">
-            <div class="input-icon">
-              <mat-icon>person</mat-icon>
+          <!-- First Name and Username - Side by Side -->
+          <div class="row-fields">
+            <div class="input-group half-width">
+              <div class="input-icon">
+                <mat-icon>person</mat-icon>
+              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <input
+                  matInput
+                  type="text"
+                  formControlName="firstName"
+                  placeholder="Prénom"
+                  autocomplete="given-name">
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('required')">
+                  Le prénom est requis
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('firstName')?.hasError('minlength')">
+                  Le prénom doit contenir au moins 2 caractères
+                </mat-error>
+              </mat-form-field>
             </div>
-            <mat-form-field appearance="outline" class="form-field">
-              <input
-                matInput
-                type="text"
-                formControlName="username"
-                placeholder="Nom d'utilisateur"
-                autocomplete="off">
-              <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
-                Le nom d'utilisateur est requis
-              </mat-error>
-              <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">
-                Le nom d'utilisateur doit contenir au moins 3 caractères
-              </mat-error>
-            </mat-form-field>
+
+            <div class="input-group half-width">
+              <div class="input-icon">
+                <mat-icon>account_circle</mat-icon>
+              </div>
+              <mat-form-field appearance="outline" class="form-field">
+                <input
+                  matInput
+                  type="text"
+                  formControlName="username"
+                  placeholder="Nom d'utilisateur"
+                  autocomplete="username">
+                <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
+                  Le nom d'utilisateur est requis
+                </mat-error>
+                <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">
+                  Le nom d'utilisateur doit contenir au moins 3 caractères
+                </mat-error>
+              </mat-form-field>
+            </div>
           </div>
 
-          <!-- Email Field -->
+          <!-- Birth Date - Day, Month, Year Selectors -->
+          <div class="date-section">
+            <div class="section-label">
+              <span>Date de naissance ?</span>
+            </div>
+            <div class="date-selectors">
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-select formControlName="birthDay" placeholder="Jour">
+                  <mat-option *ngFor="let day of days" [value]="day">{{day}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="registerForm.get('birthDay')?.hasError('required')">
+                  Jour requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-select formControlName="birthMonth" placeholder="Mois">
+                  <mat-option *ngFor="let month of months" [value]="month.value">{{month.label}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="registerForm.get('birthMonth')?.hasError('required')">
+                  Mois requis
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="date-field">
+                <mat-select formControlName="birthYear" placeholder="Année">
+                  <mat-option *ngFor="let year of years" [value]="year">{{year}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="registerForm.get('birthYear')?.hasError('required')">
+                  Année requise
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Gender Selection -->
+          <div class="gender-section">
+            <div class="section-label">
+              <span>Genre ?</span>
+            </div>
+            <div class="gender-options">
+              <mat-radio-group formControlName="gender" class="gender-radio-group">
+                <mat-radio-button value="femme" class="gender-radio">Femme</mat-radio-button>
+                <mat-radio-button value="homme" class="gender-radio">Homme</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+
+          <!-- Email/Phone Field -->
           <div class="input-group">
             <div class="input-icon">
               <mat-icon>email</mat-icon>
@@ -183,8 +257,8 @@ import { LoginRequest } from '../../../core/models/auth.models';
                 matInput
                 type="email"
                 formControlName="email"
-                placeholder="Votre adresse email"
-                autocomplete="off">
+                placeholder="Email"
+                autocomplete="email">
               <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
                 L'email est requis
               </mat-error>
@@ -194,8 +268,9 @@ import { LoginRequest } from '../../../core/models/auth.models';
             </mat-form-field>
           </div>
 
-          <!-- Password Field -->
-          <div class="input-group">
+          <!-- Password Fields - Side by Side -->
+          <div class="row-fields">
+            <div class="input-group half-width">
             <div class="input-icon">
               <mat-icon>lock</mat-icon>
             </div>
@@ -204,8 +279,8 @@ import { LoginRequest } from '../../../core/models/auth.models';
                 matInput
                 [type]="showRegisterPassword ? 'text' : 'password'"
                 formControlName="password"
-                placeholder="Mot de passe (min. 16 caractères)"
-                autocomplete="off">
+                  placeholder="Nouveau mot de passe"
+                  autocomplete="new-password">
               <button
                 mat-icon-button
                 matSuffix
@@ -229,9 +304,7 @@ import { LoginRequest } from '../../../core/models/auth.models';
             </mat-form-field>
           </div>
 
-
-          <!-- Confirm Password Field -->
-          <div class="input-group">
+            <div class="input-group half-width">
             <div class="input-icon">
               <mat-icon>lock</mat-icon>
             </div>
@@ -241,7 +314,7 @@ import { LoginRequest } from '../../../core/models/auth.models';
                 [type]="showConfirmPassword ? 'text' : 'password'"
                 formControlName="confirmPassword"
                 placeholder="Confirmer le mot de passe"
-                autocomplete="off">
+                  autocomplete="new-password">
               <button
                 mat-icon-button
                 matSuffix
@@ -260,6 +333,7 @@ import { LoginRequest } from '../../../core/models/auth.models';
                 La confirmation du mot de passe est requise
               </mat-error>
             </mat-form-field>
+            </div>
           </div>
 
           <!-- Password Mismatch Error -->
@@ -388,7 +462,7 @@ import { LoginRequest } from '../../../core/models/auth.models';
     /* Main Login Card */
     .login-card {
       width: 100%;
-      max-width: 380px;
+      max-width: 480px;
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 20px;
@@ -532,6 +606,8 @@ import { LoginRequest } from '../../../core/models/auth.models';
       border: 2px solid #000000;
       overflow: hidden;
       padding-left: 48px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .form-field ::ng-deep .mat-mdc-form-field-infix {
@@ -840,6 +916,131 @@ import { LoginRequest } from '../../../core/models/auth.models';
       background: #38a169 !important; /* green-500 */
       color: #ffffff !important;
     }
+
+    /* New Layout Styles */
+    .row-fields {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .half-width {
+      flex: 1;
+      min-width: 0; /* Prevents flex items from overflowing */
+    }
+
+    .date-section, .gender-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: #4a5568;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .section-label mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #a0aec0;
+    }
+
+    .date-selectors {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .date-field {
+      flex: 1;
+    }
+
+    .date-field ::ng-deep .mat-mdc-form-field {
+      width: 100%;
+    }
+
+    .date-field ::ng-deep .mat-mdc-text-field-wrapper {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid #000000;
+      overflow: hidden;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .date-field ::ng-deep .mat-mdc-form-field-infix {
+      padding: 8px 0;
+      min-height: unset;
+    }
+
+    .date-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .date-field ::ng-deep .mat-mdc-select {
+      color: #2d3748;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .date-field:focus-within ::ng-deep .mat-mdc-text-field-wrapper {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      border: 2px solid #667eea;
+      transform: translateY(-2px);
+    }
+
+    .gender-options {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .gender-radio-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .gender-radio {
+      color: #4a5568;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .gender-radio ::ng-deep .mdc-radio {
+      border-color: #cbd5e0;
+    }
+
+    .gender-radio ::ng-deep .mdc-radio--selected {
+      color: #667eea;
+    }
+
+    .gender-radio ::ng-deep .mdc-radio--selected .mdc-radio__ripple {
+      background-color: #667eea;
+    }
+
+    /* Mobile Responsive for new layout */
+    @media (max-width: 480px) {
+      .row-fields {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .date-selectors {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .gender-radio-group {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
   `]
 })
 export class LoginComponent implements OnInit, OnDestroy {
@@ -857,6 +1058,16 @@ export class LoginComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private countdownIntervalId: any;
 
+  // Options pour les sélecteurs de date
+  days = Array.from({length: 31}, (_, i) => i + 1);
+  months = [
+    {value: 1, label: 'Jan'}, {value: 2, label: 'Fév'}, {value: 3, label: 'Mar'},
+    {value: 4, label: 'Avr'}, {value: 5, label: 'Mai'}, {value: 6, label: 'Juin'},
+    {value: 7, label: 'Juil'}, {value: 8, label: 'Août'}, {value: 9, label: 'Sep'},
+    {value: 10, label: 'Oct'}, {value: 11, label: 'Nov'}, {value: 12, label: 'Déc'}
+  ];
+  years = Array.from({length: 100}, (_, i) => new Date().getFullYear() - 18 - i);
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -870,8 +1081,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
 
     this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
+      birthDay: ['', [Validators.required]],
+      birthMonth: ['', [Validators.required]],
+      birthYear: ['', [Validators.required]],
+      gender: [''],
       password: ['', [Validators.required, Validators.minLength(16)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
@@ -929,8 +1146,14 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   resetRegisterForm(): void {
     this.registerForm.reset({
+      firstName: '',
       username: '',
       email: '',
+      phone: '',
+      birthDay: '',
+      birthMonth: '',
+      birthYear: '',
+      gender: '',
       password: '',
       confirmPassword: ''
     });
@@ -955,10 +1178,19 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onRegisterSubmit(): void {
+    // Marquer tous les champs comme touchés pour afficher les erreurs
+    this.registerForm.markAllAsTouched();
+    
     if (this.registerForm.valid && !this.isLoading) {
       const userData = {
+        firstName: this.registerForm.value.firstName,
         username: this.registerForm.value.username,
         email: this.registerForm.value.email,
+        phone: this.registerForm.value.phone,
+        birthDay: this.registerForm.value.birthDay,
+        birthMonth: this.registerForm.value.birthMonth,
+        birthYear: this.registerForm.value.birthYear,
+        gender: this.registerForm.value.gender,
         password: this.registerForm.value.password
       };
 

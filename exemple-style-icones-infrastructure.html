@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemple Style Icônes Infrastructure Audit</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --primary-light: #e3f2fd;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #404040;
+            --primary-light: #2d2d2d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-secondary);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .result-card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: var(--primary-light);
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        /* Mode sombre : icônes grises */
+        [data-theme="dark"] .card-icon {
+            color: #111827 !important;
+        }
+
+        [data-theme="dark"] .card-icon svg {
+            fill: #111827 !important;
+        }
+
+        [data-theme="dark"] .card-icon svg path {
+            fill: #111827 !important;
+        }
+        
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .ports-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .config-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .firewall-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Mode sombre : toutes les icônes SVG spécifiques */
+        [data-theme="dark"] .ports-icon,
+        [data-theme="dark"] .config-icon,
+        [data-theme="dark"] .firewall-icon {
+            fill: #111827 !important;
+        }
+
+        [data-theme="dark"] .ports-icon path,
+        [data-theme="dark"] .config-icon path,
+        [data-theme="dark"] .firewall-icon path {
+            fill: #111827 !important;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-secondary);
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .theme-demo {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .theme-demo h4 {
+            margin: 0 0 15px 0;
+            color: var(--text-primary);
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .icon-item {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .icon-item h5 {
+            margin: 10px 0 5px 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .icon-item p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .config-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .config-item:hover {
+            background: var(--bg-primary);
+        }
+
+        .config-icon {
+            font-size: 1.5rem;
+            width: 32px;
+            text-align: center;
+        }
+
+        .config-details {
+            flex: 1;
+        }
+
+        .config-component {
+            margin: 0 0 4px 0;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .config-version {
+            margin: 0 0 4px 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .config-description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .config-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .config-status.status-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .config-status.status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .firewall-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .firewall-simple {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .firewall-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+
+        .firewall-line strong {
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        .firewall-line .status-partial {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Basculer le thème</button>
+        
+        <h1>Style Icônes Infrastructure Audit - Comme la page Audits</h1>
+        
+        <div class="comparison">
+            <div class="theme-demo">
+                <h4>Mode Clair</h4>
+                <p>Icônes avec fond bleu clair et couleur du texte</p>
+            </div>
+            
+            <div class="theme-demo">
+                <h4>Mode Sombre</h4>
+                <p>Icônes avec fond sombre et couleur grise (#111827)</p>
+            </div>
+        </div>
+        
+        <div class="icon-grid">
+            <div class="icon-item">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="ports-icon">
+                        <path d="M192 32C209.7 32 224 46.3 224 64L224 160L352 160L352 64C352 46.3 366.3 32 384 32C401.7 32 416 46.3 416 64L416 160L480 160C497.7 160 512 174.3 512 192C512 209.7 497.7 224 480 224L480 272.7C381.4 280.8 304 363.4 304 464C304 491.3 309.7 517.3 320 540.9L320 544C320 561.7 305.7 576 288 576C270.3 576 256 561.7 256 544L256 477.3C165.2 462.1 96 383.1 96 288L96 224C78.3 224 64 209.7 64 192C64 174.3 78.3 160 96 160L160 160L160 64C160 46.3 174.3 32 192 32zM352 464C352 384.5 416.5 320 496 320C575.5 320 640 384.5 640 464C640 543.5 575.5 608 496 608C416.5 608 352 543.5 352 464zM529.4 387C523.6 382.8 515.6 383 510 387.5L430 451.5C424.7 455.7 422.6 462.9 424.9 469.3C427.2 475.7 433.2 480 440 480L472.9 480L457 522.4C454.5 529.1 456.8 536.7 462.6 541C468.4 545.3 476.4 545 482 540.5L562 476.5C567.3 472.3 569.4 465.1 567.1 458.7C564.8 452.3 558.8 448 552 448L519.1 448L535 405.6C537.5 398.9 535.2 391.3 529.4 387z"/>
+                    </svg>
+                </div>
+                <h5>Ports Ouverts</h5>
+                <p>Icône de serveur</p>
+            </div>
+            
+            <div class="icon-item">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="config-icon">
+                        <path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z"/>
+                    </svg>
+                </div>
+                <h5>Configuration</h5>
+                <p>Icône d'engrenage</p>
+            </div>
+            
+            <div class="icon-item">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="firewall-icon">
+                        <path d="M320 64C324.6 64 329.2 65 333.4 66.9L521.8 146.8C543.8 156.1 560.2 177.8 560.1 204C559.6 303.2 518.8 484.7 346.5 567.2C329.8 575.2 310.4 575.2 293.7 567.2C121.3 484.7 80.6 303.2 80.1 204C80 177.8 96.4 156.1 118.4 146.8L306.7 66.9C310.9 65 315.4 64 320 64zM320 130.8L320 508.9C458 442.1 495.1 294.1 496 205.5L320 130.9L320 130.9z"/>
+                    </svg>
+                </div>
+                <h5>Pare-feu & WAF</h5>
+                <p>Icône de bouclier</p>
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="config-icon">
+                            <path d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z"/>
+                        </svg>
+                    </div>
+                    <h3>Configuration du Serveur</h3>
+                </div>
+            </div>
+            <div class="config-list">
+                <div class="config-item">
+                    <div class="config-icon">✅</div>
+                    <div class="config-details">
+                        <h4 class="config-component">Serveur HTTP</h4>
+                        <p class="config-version">Version: cloudflare</p>
+                        <p class="config-description">Serveur détecté</p>
+                    </div>
+                    <div class="config-status status-ok">Ok</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-icon">✅</div>
+                    <div class="config-details">
+                        <h4 class="config-component">PHP</h4>
+                        <p class="config-version">Version: N/A</p>
+                        <p class="config-description">Non exposé (sécurité renforcée)</p>
+                    </div>
+                    <div class="config-status status-ok">Ok</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-icon">⚠️</div>
+                    <div class="config-details">
+                        <h4 class="config-component">Certificat SSL</h4>
+                        <p class="config-version">Version: Expire dans 16 jours</p>
+                        <p class="config-description">Le certificat expire le 2026-02-28</p>
+                    </div>
+                    <div class="config-status status-warning">Warning</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="firewall-icon">
+                            <path d="M320 64C324.6 64 329.2 65 333.4 66.9L521.8 146.8C543.8 156.1 560.2 177.8 560.1 204C559.6 303.2 518.8 484.7 346.5 567.2C329.8 575.2 310.4 575.2 293.7 567.2C121.3 484.7 80.6 303.2 80.1 204C80 177.8 96.4 156.1 118.4 146.8L306.7 66.9C310.9 65 315.4 64 320 64zM320 130.8L320 508.9C458 442.1 495.1 294.1 496 205.5L320 130.9L320 130.9z"/>
+                        </svg>
+                    </div>
+                    <h3>Pare-feu & WAF</h3>
+                </div>
+            </div>
+            <div class="firewall-content">
+                <div class="firewall-simple">
+                    <div class="firewall-line">
+                        <strong>Status:</strong> 
+                        <span class="status-partial">Partial</span>
+                    </div>
+                    <div class="firewall-line">
+                        <strong>Type:</strong> Pare-feu partiellement configuré
+                    </div>
+                    <div class="firewall-line">
+                        <strong>Message:</strong> Un pare-feu ou CDN est détecté (headers), mais il ne bloque pas cette attaque basique. Renforcement recommandé.
+                    </div>
+                    <div class="firewall-line">
+                        <strong>Headers détectés:</strong> server: cloudflare
+                    </div>
+                    <div class="firewall-line">
+                        <strong>Codes de réponse:</strong> normal: 200 | attaque: 200
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+        }
+    </script>
+</body>
+</html>

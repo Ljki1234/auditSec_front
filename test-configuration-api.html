@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Configuration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .loading {
+            display: none;
+            color: #007bff;
+            font-style: italic;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        .config-info {
+            flex: 1;
+        }
+        .config-component {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .config-version {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 3px;
+        }
+        .config-message {
+            color: #495057;
+            font-size: 0.9em;
+        }
+        .status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status-ok {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-critical {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test API Configuration</h1>
+        <p>Testez l'API de configuration avec différentes URLs</p>
+        
+        <div class="form-group">
+            <label for="url">URL à analyser :</label>
+            <input type="url" id="url" placeholder="https://www.linkedin.com/" value="https://www.linkedin.com/">
+        </div>
+        
+        <button onclick="testConfiguration()" id="testBtn">Tester la Configuration</button>
+        <div class="loading" id="loading">Chargement...</div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function testConfiguration() {
+            const urlInput = document.getElementById('url');
+            const testBtn = document.getElementById('testBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            const url = urlInput.value.trim();
+            if (!url) {
+                alert('Veuillez saisir une URL');
+                return;
+            }
+            
+            testBtn.disabled = true;
+            loading.style.display = 'block';
+            results.innerHTML = '';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/configuration?url=${encodeURIComponent(url)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                console.error('Error:', error);
+                results.innerHTML = `
+                    <div class="results error">
+                        <h3>Erreur</h3>
+                        <p>Impossible de récupérer les données de configuration : ${error.message}</p>
+                        <p><strong>Vérifiez que :</strong></p>
+                        <ul>
+                            <li>Le serveur backend est démarré sur le port 8080</li>
+                            <li>L'API /api/configuration est accessible</li>
+                            <li>Il n'y a pas de problème de CORS</li>
+                        </ul>
+                    </div>
+                `;
+            } finally {
+                testBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+        
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            
+            if (!Array.isArray(data) || data.length === 0) {
+                results.innerHTML = `
+                    <div class="results">
+                        <h3>Aucune donnée</h3>
+                        <p>Aucune information de configuration trouvée pour cette URL.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="results"><h3>Résultats de Configuration</h3>';
+            
+            data.forEach(item => {
+                const statusClass = `status-${item.status.toLowerCase()}`;
+                html += `
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-component">${item.component}</div>
+                            <div class="config-version">Version: ${item.version}</div>
+                            <div class="config-message">${item.message}</div>
+                        </div>
+                        <div class="status ${statusClass}">${item.status}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            results.innerHTML = html;
+        }
+        
+        // Test automatique au chargement de la page
+        window.addEventListener('load', () => {
+            console.log('Page chargée, prêt pour les tests');
+        });
+    </script>
+</body>
+</html>

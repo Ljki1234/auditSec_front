@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Intégration Nmap - Infrastructure Audit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        .url-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #5a6fd8;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        pre {
+            background: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test d'Intégration Nmap - Infrastructure Audit</h1>
+        
+        <div class="test-section">
+            <h3>📋 Instructions de Test</h3>
+            <p>Cette page vous permet de tester l'intégration de l'API nmap avec le composant Infrastructure Audit.</p>
+            <ol>
+                <li>Assurez-vous que votre backend Spring Boot est démarré sur <code>http://localhost:8080</code></li>
+                <li>Démarrez votre application Angular sur <code>http://localhost:4200</code></li>
+                <li>Naviguez vers <code>http://localhost:4200/infrastructure-audit</code></li>
+                <li>Entrez une URL à scanner (ex: <code>http://testphp.vulnweb.com/</code>)</li>
+                <li>Cliquez sur "Lancer l'Audit"</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Test Direct de l'API Nmap</h3>
+            <p>Vous pouvez également tester l'API directement :</p>
+            
+            <input type="text" id="testUrl" class="url-input" placeholder="Entrez une URL à scanner (ex: http://testphp.vulnweb.com/)" value="http://testphp.vulnweb.com/">
+            
+            <button class="test-button" onclick="testNmapAPI()">Tester l'API Nmap</button>
+            <button class="test-button" onclick="testWithCustomPorts()">Tester avec ports personnalisés</button>
+            
+            <div id="apiResult" class="result" style="display: none;">
+                <h4>Résultat de l'API :</h4>
+                <pre id="apiResultContent"></pre>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>✅ Fonctionnalités Implémentées</h3>
+            <ul>
+                <li>✅ Service NmapService créé avec méthodes de scan</li>
+                <li>✅ Interface ProcessedNmapResult pour traiter les données</li>
+                <li>✅ Classe NmapResultProcessor pour analyser les résultats</li>
+                <li>✅ Intégration dans InfrastructureAuditComponent</li>
+                <li>✅ Appel API POST vers <code>/api/nmap/scan</code></li>
+                <li>✅ Affichage des ports ouverts, filtrés et fermés</li>
+                <li>✅ Calcul automatique du score de sécurité</li>
+                <li>✅ Analyse de la configuration du serveur</li>
+                <li>✅ Détection du statut du pare-feu</li>
+                <li>✅ Interface utilisateur améliorée avec informations de scan</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Structure des Données</h3>
+            <p>L'API nmap retourne des données au format JSON avec la structure suivante :</p>
+            <pre>{
+  "@version": "1.0",
+  "host": {
+    "address": { "@addr": "testphp.vulnweb.com" },
+    "ports": {
+      "port": [
+        {
+          "@portid": "80",
+          "state": { "@state": "open" },
+          "service": { "@name": "http", "@product": "nginx 1.19.0" }
+        }
+      ]
+    }
+  }
+}</pre>
+        </div>
+    </div>
+
+    <script>
+        async function testNmapAPI() {
+            const url = document.getElementById('testUrl').value;
+            if (!url) {
+                alert('Veuillez entrer une URL à scanner');
+                return;
+            }
+
+            const resultDiv = document.getElementById('apiResult');
+            const resultContent = document.getElementById('apiResultContent');
+            
+            resultDiv.style.display = 'block';
+            resultContent.textContent = 'Envoi de la requête...';
+
+            try {
+                const response = await fetch('http://localhost:8080/api/nmap/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultContent.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultContent.textContent = `Erreur: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultContent.textContent = `Erreur de connexion: ${error.message}`;
+            }
+        }
+
+        async function testWithCustomPorts() {
+            const url = document.getElementById('testUrl').value;
+            if (!url) {
+                alert('Veuillez entrer une URL à scanner');
+                return;
+            }
+
+            const resultDiv = document.getElementById('apiResult');
+            const resultContent = document.getElementById('apiResultContent');
+            
+            resultDiv.style.display = 'block';
+            resultContent.textContent = 'Envoi de la requête avec ports personnalisés...';
+
+            try {
+                const response = await fetch('http://localhost:8080/api/nmap/scan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        url: url,
+                        ports: '80,443,22,21,25,53,110,143,993,995'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultContent.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultContent.textContent = `Erreur: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultContent.textContent = `Erreur de connexion: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

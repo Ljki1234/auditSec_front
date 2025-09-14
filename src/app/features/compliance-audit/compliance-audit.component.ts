@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -94,7 +94,11 @@ export interface ComplianceAuditResult {
           <div class="audit-section">
             <div class="section-header" (click)="toggleSection('cookies')">
               <div class="section-title">
-                <span class="section-icon">🍪</span>
+                <div class="section-icon" [style.color]="getCardColor('cookies')">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="cookies-icon" [attr.fill]="getCardColor('cookies')">
+                    <path d="M311.2 81C289.1 77.9 266.6 81.9 246.8 92.4L172.8 131.9C153.1 142.4 137.2 158.9 127.4 179L90.7 254.6C80.9 274.7 77.7 297.5 81.6 319.5L96.1 402.3C100 424.4 110.7 444.6 126.8 460.2L187.1 518.6C203.2 534.2 223.7 544.2 245.8 547.3L328.8 559C350.9 562.1 373.4 558.1 393.2 547.6L467.2 508.1C486.9 497.6 502.8 481.1 512.6 460.9L549.3 385.4C559.1 365.3 562.3 342.5 558.4 320.5L543.8 237.7C539.9 215.6 529.2 195.4 513.1 179.8L452.9 121.5C436.8 105.9 416.3 95.9 394.2 92.8L311.2 81zM272 208C289.7 208 304 222.3 304 240C304 257.7 289.7 272 272 272C254.3 272 240 257.7 240 240C240 222.3 254.3 208 272 208zM208 400C208 382.3 222.3 368 240 368C257.7 368 272 382.3 272 400C272 417.7 257.7 432 240 432C222.3 432 208 417.7 208 400zM432 336C449.7 336 464 350.3 464 368C464 385.7 449.7 400 432 400C414.3 400 400 385.7 400 368C400 350.3 414.3 336 432 336z"/>
+                  </svg>
+                </div>
                 <h3>Cookies & Consent (GDPR/CNDP)</h3>
                 <span class="status-badge" [class]="auditData.sections.cookiesConsent.status">
                   {{ getStatusIcon(auditData.sections.cookiesConsent.status) }}
@@ -133,7 +137,11 @@ export interface ComplianceAuditResult {
           <div class="audit-section">
             <div class="section-header" (click)="toggleSection('dataProtection')">
               <div class="section-title">
-                <span class="section-icon">🛡️</span>
+                <div class="section-icon" [style.color]="getCardColor('dataProtection')">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="shield-icon" [attr.fill]="getCardColor('dataProtection')">
+                    <path d="M320 64C324.6 64 329.2 65 333.4 66.9L521.8 146.8C543.8 156.1 560.2 177.8 560.1 204C559.6 303.2 518.8 484.7 346.5 567.2C329.8 575.2 310.4 575.2 293.7 567.2C121.3 484.7 80.6 303.2 80.1 204C80 177.8 96.4 156.1 118.4 146.8L306.7 66.9C310.9 65 315.4 64 320 64zM320 130.8L320 508.9C458 442.1 495.1 294.1 496 205.5L320 130.9L320 130.9z"/>
+                  </svg>
+                </div>
                 <h3>Sensitive Data Protection</h3>
                 <span class="status-badge" [class]="auditData.sections.sensitiveDataProtection.status">
                   {{ getStatusIcon(auditData.sections.sensitiveDataProtection.status) }}
@@ -172,7 +180,11 @@ export interface ComplianceAuditResult {
           <div class="audit-section">
             <div class="section-header" (click)="toggleSection('legalNotices')">
               <div class="section-title">
-                <span class="section-icon">📋</span>
+                <div class="section-icon" [style.color]="getCardColor('legalNotices')">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="document-icon" [attr.fill]="getCardColor('legalNotices')">
+                    <path d="M480 576L192 576C139 576 96 533 96 480L96 160C96 107 139 64 192 64L496 64C522.5 64 544 85.5 544 112L544 400C544 420.9 530.6 438.7 512 445.3L512 512C529.7 512 544 526.3 544 544C544 561.7 529.7 576 512 576L480 576zM192 448C174.3 448 160 462.3 160 480C160 497.7 174.3 512 192 512L448 512L448 448L192 448zM224 216C224 229.3 234.7 240 248 240L424 240C437.3 240 448 229.3 448 216C448 202.7 437.3 192 424 192L248 192C234.7 192 224 202.7 224 216zM248 288C234.7 288 224 298.7 224 312C224 325.3 234.7 336 248 336L424 336C437.3 336 448 325.3 448 312C448 298.7 437.3 288 424 288L248 288z"/>
+                  </svg>
+                </div>
                 <h3>Mandatory Legal Notices</h3>
                 <span class="status-badge" [class]="auditData.sections.legalNotices.status">
                   {{ getStatusIcon(auditData.sections.legalNotices.status) }}
@@ -443,7 +455,34 @@ export interface ComplianceAuditResult {
     }
 
     .section-icon {
-      font-size: 1.8rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .section-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* Mode sombre pour les icônes */
+    [data-theme="dark"] .section-icon {
+      color: #111827 !important;
+    }
+
+    [data-theme="dark"] .section-icon svg {
+      fill: #111827 !important;
+    }
+
+    [data-theme="dark"] .section-icon svg path {
+      fill: #111827 !important;
     }
 
     .status-badge {
@@ -629,6 +668,7 @@ export interface ComplianceAuditResult {
 })
 export class ComplianceAuditComponent implements OnInit {
   private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
   
   apiUrl: string = '';
   auditData: ComplianceAuditResult | null = null;
@@ -644,6 +684,8 @@ export class ComplianceAuditComponent implements OnInit {
   ngOnInit() {
     // Initialize with empty URL
     this.apiUrl = '';
+    // Setup theme listener
+    this.setupThemeListener();
   }
 
   loadAuditResults() {
@@ -755,5 +797,36 @@ export class ComplianceAuditComponent implements OnInit {
 
   clearError() {
     this.errorMessage = '';
+  }
+
+  // Méthode pour obtenir la couleur des icônes selon le thème
+  getCardColor(section: string): string {
+    // Détecter le mode sombre
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    if (isDarkMode) {
+      return '#111827';
+    } else {
+      return 'currentColor';
+    }
+  }
+
+  // Méthode pour forcer la mise à jour des couleurs lors du changement de thème
+  onThemeChange() {
+    // Cette méthode sera appelée quand le thème change
+    // Elle force la détection de changement dans Angular
+    this.cdr.detectChanges();
+  }
+
+  // Configuration du listener pour les changements de thème
+  setupThemeListener() {
+    const observer = new MutationObserver(() => {
+      this.onThemeChange();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
   }
 }

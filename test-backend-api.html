@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Backend API</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Backend API</h1>
+        
+        <div class="test-section">
+            <h3>1. Test de connectivité backend</h3>
+            <button onclick="testBackendConnection()">Tester la connexion</button>
+            <div id="connection-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Test API Configuration</h3>
+            <button onclick="testConfigurationAPI()">Tester /api/configuration</button>
+            <div id="config-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Test avec CORS</h3>
+            <button onclick="testWithCORS()">Tester avec CORS</button>
+            <div id="cors-result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testBackendConnection() {
+            const result = document.getElementById('connection-result');
+            result.innerHTML = '<p>Test en cours...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/configuration?url=https://www.google.com', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    result.innerHTML = '<div class="success"><p>✅ Backend accessible !</p></div>';
+                } else {
+                    result.innerHTML = `<div class="error"><p>❌ Erreur HTTP: ${response.status}</p></div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error"><p>❌ Erreur de connexion: ${error.message}</p></div>`;
+            }
+        }
+        
+        async function testConfigurationAPI() {
+            const result = document.getElementById('config-result');
+            result.innerHTML = '<p>Test en cours...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/configuration?url=https://www.google.com');
+                const data = await response.json();
+                
+                result.innerHTML = `
+                    <div class="success">
+                        <p>✅ API Configuration fonctionne !</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                result.innerHTML = `<div class="error"><p>❌ Erreur API: ${error.message}</p></div>`;
+            }
+        }
+        
+        async function testWithCORS() {
+            const result = document.getElementById('cors-result');
+            result.innerHTML = '<p>Test CORS en cours...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/configuration?url=https://www.google.com', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'http://localhost:4200',
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'Content-Type'
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                };
+                
+                result.innerHTML = `
+                    <div class="success">
+                        <p>✅ Test CORS réussi !</p>
+                        <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                result.innerHTML = `<div class="error"><p>❌ Erreur CORS: ${error.message}</p></div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemple Filtrage Headers</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .example {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .before {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .after {
+            border-left: 4px solid #10b981;
+        }
+        
+        .headers-list {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .filtered {
+            color: #10b981;
+            font-weight: bold;
+        }
+        
+        .excluded {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exemple de Filtrage des Headers</h1>
+        
+        <div class="example before">
+            <h3>❌ Avant (Headers bruts du backend)</h3>
+            <div class="headers-list">
+                <div>server: gws</div>
+                <div class="excluded">set-cookie: JSESSIONID=ajax:4956603638081499295; SameSite=None; Path=/; Domain=.www.linkedin.com; Secure; lang=v=2&lang=en-us; SameSite=None; Path=/; Domain=linkedin.com; Secure; bcookie="v=2&b42fb0b9-539c-400a-850a-8975c7f28dda"; domain=.linkedin.com; Path=/; Secure; Expires=Sat, 12-Sep-2026 23:08:15 GMT; SameSite=None; bscookie="v=1&202509122308154dcda27a-9cf5-4764-8d3f-4b97b935c6c1AQHsQWLYh6brgWyM2ZsVONfa52ZZ1CIk"; domain=.www.linkedin.com; Path=/; Secure; Expires=Sat, 12-Sep-2026 23:08:15 GMT; HttpOnly; SameSite=None; lidc="b=TGST00:s=T:r=T:a=T:p=T:g=3748:u=1:x=1:i=1757718495:t=1757804895:v=2:sig=AQEvH_zu66SsxwdebkExwESFczbcyfvy"; Expires=Sat, 13 Sep 2025 23:08:15 GMT; domain=.linkedin.com; Path=/; SameSite=None; Secure; __cf_bm=pv1Bl8H0gM.z6i997CCRoalsZAJvtO_e5zQMB4DxgFE-1757718495-1.0.1.1-9OHgWPEI_7tCyU4eZPV8eDV0zBtOGn3HlaktaUkt99n7HizYQSxHUD0jOcJuuYTfOLLdwriTggnubrDV6vvrhl17sR8M_kuA1MXrgKRWk70; path=/; expires=Fri, 12-Sep-25 23:38:15 GMT; domain=.linkedin.com; HttpOnly; Secure; SameSite=None</div>
+                <div>content-type: text/html; charset=UTF-8</div>
+                <div>cache-control: private, no-cache, no-store, must-revalidate</div>
+            </div>
+        </div>
+        
+        <div class="example after">
+            <h3>✅ Après (Headers filtrés)</h3>
+            <div class="headers-list">
+                <div class="filtered">server: gws</div>
+                <div class="filtered">content-type: text/html; charset=UTF-8</div>
+                <div class="filtered">cache-control: private, no-cache, no-store, must-revalidate</div>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>🛡️ Pare-feu & WAF - Affichage Final</h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace;">
+                <div><strong>Status:</strong> Partial</div>
+                <div><strong>Type:</strong> Pare-feu partiellement configuré</div>
+                <div><strong>Message:</strong> Un pare-feu ou CDN est détecté, mais il ne bloque pas cette attaque basique.</div>
+                <div><strong>Headers détectés:</strong> server: gws, content-type: text/html; charset=UTF-8, cache-control: private, no-cache, no-store, must-revalidate</div>
+                <div><strong>Codes de réponse:</strong> normal: 200 | attaque: 200</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

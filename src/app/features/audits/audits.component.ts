@@ -187,7 +187,35 @@ interface CachedAuditData {
                 <!-- Card Header -->
                 <div class="card-header">
                   <div class="card-title">
-                    <div class="card-icon">{{ result.icon }}</div>
+                    <div class="card-icon" [style.color]="getCardColor(result)" *ngIf="result.id !== 'ssl' && result.id !== 'headers' && result.id !== 'js-libraries' && result.id !== 'web-vulnerabilities' && result.id !== 'cookies' && result.id !== 'dependencies' && result.id !== 'backend-scan' && result.id !== 'seo'; else customIconTemplate">{{ result.icon }}</div>
+                    <ng-template #customIconTemplate>
+                      <div class="card-icon" [style.color]="getCardColor(result)">
+                      <svg *ngIf="result.id === 'ssl'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="ssl-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'headers'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="headers-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M320 64C324.6 64 329.2 65 333.4 66.9L521.8 146.8C543.8 156.1 560.2 177.8 560.1 204C559.6 303.2 518.8 484.7 346.5 567.2C329.8 575.2 310.4 575.2 293.7 567.2C121.3 484.7 80.6 303.2 80.1 204C80 177.8 96.4 156.1 118.4 146.8L306.7 66.9C310.9 65 315.4 64 320 64zM320 130.8L320 508.9C458 442.1 495.1 294.1 496 205.5L320 130.9L320 130.9z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'js-libraries'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="js-libraries-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M480 576L192 576C139 576 96 533 96 480L96 160C96 107 139 64 192 64L496 64C522.5 64 544 85.5 544 112L544 400C544 420.9 530.6 438.7 512 445.3L512 512C529.7 512 544 526.3 544 544C544 561.7 529.7 576 512 576L480 576zM192 448C174.3 448 160 462.3 160 480C160 497.7 174.3 512 192 512L448 512L448 448L192 448zM224 216C224 229.3 234.7 240 248 240L424 240C437.3 240 448 229.3 448 216C448 202.7 437.3 192 424 192L248 192C234.7 192 224 202.7 224 216zM248 288C234.7 288 224 298.7 224 312C224 325.3 234.7 336 248 336L424 336C437.3 336 448 325.3 448 312C448 298.7 437.3 288 424 288L248 288z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'web-vulnerabilities'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="vulnerabilities-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M525.2 82.9C536.7 88 544 99.4 544 112L544 528C544 540.6 536.7 552 525.2 557.1C513.7 562.2 500.4 560.3 490.9 552L444.3 511.3C400.7 473.2 345.6 451 287.9 448.3L287.9 544C287.9 561.7 273.6 576 255.9 576L223.9 576C206.2 576 191.9 561.7 191.9 544L191.9 448C121.3 448 64 390.7 64 320C64 249.3 121.3 192 192 192L276.5 192C338.3 191.8 397.9 169.3 444.4 128.7L491 88C500.4 79.7 513.9 77.8 525.3 82.9zM288 384L288 384.2C358.3 386.9 425.8 412.7 480 457.6L480 182.3C425.8 227.2 358.3 253 288 255.7L288 384z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'cookies'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="cookies-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M311.2 81C289.1 77.9 266.6 81.9 246.8 92.4L172.8 131.9C153.1 142.4 137.2 158.9 127.4 179L90.7 254.6C80.9 274.7 77.7 297.5 81.6 319.5L96.1 402.3C100 424.4 110.7 444.6 126.8 460.2L187.1 518.6C203.2 534.2 223.7 544.2 245.8 547.3L328.8 559C350.9 562.1 373.4 558.1 393.2 547.6L467.2 508.1C486.9 497.6 502.8 481.1 512.6 460.9L549.3 385.4C559.1 365.3 562.3 342.5 558.4 320.5L543.8 237.7C539.9 215.6 529.2 195.4 513.1 179.8L452.9 121.5C436.8 105.9 416.3 95.9 394.2 92.8L311.2 81zM272 208C289.7 208 304 222.3 304 240C304 257.7 289.7 272 272 272C254.3 272 240 257.7 240 240C240 222.3 254.3 208 272 208zM208 400C208 382.3 222.3 368 240 368C257.7 368 272 382.3 272 400C272 417.7 257.7 432 240 432C222.3 432 208 417.7 208 400zM432 336C449.7 336 464 350.3 464 368C464 385.7 449.7 400 432 400C414.3 400 400 385.7 400 368C400 350.3 414.3 336 432 336z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'dependencies'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="dependencies-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M296.5 69.2C311.4 62.3 328.6 62.3 343.5 69.2L562.1 170.2C570.6 174.1 576 182.6 576 192C576 201.4 570.6 209.9 562.1 213.8L343.5 314.8C328.6 321.7 311.4 321.7 296.5 314.8L77.9 213.8C69.4 209.8 64 201.3 64 192C64 182.7 69.4 174.1 77.9 170.2L296.5 69.2zM112.1 282.4L276.4 358.3C304.1 371.1 336 371.1 363.7 358.3L528 282.4L562.1 298.2C570.6 302.1 576 310.6 576 320C576 329.4 570.6 337.9 562.1 341.8L343.5 442.8C328.6 449.7 311.4 449.7 296.5 442.8L77.9 341.8C69.4 337.8 64 329.3 64 320C64 310.7 69.4 302.1 77.9 298.2L112 282.4zM77.9 426.2L112 410.4L276.3 486.3C304 499.1 335.9 499.1 363.6 486.3L527.9 410.4L562 426.2C570.5 430.1 575.9 438.6 575.9 448C575.9 457.4 570.5 465.9 562 469.8L343.4 570.8C328.5 577.7 311.3 577.7 296.4 570.8L77.9 469.8C69.4 465.8 64 457.3 64 448C64 438.7 69.4 430.1 77.9 426.2z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'backend-scan'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="backend-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M415.9 274.5C428.1 271.2 440.9 277 446.4 288.3L465 325.9C475.3 327.3 485.4 330.1 494.9 334L529.9 310.7C540.4 303.7 554.3 305.1 563.2 314L582.4 333.2C591.3 342.1 592.7 356.1 585.7 366.5L562.4 401.4C564.3 406.1 566 411 567.4 416.1C568.8 421.2 569.7 426.2 570.4 431.3L608.1 449.9C619.4 455.5 625.2 468.3 621.9 480.4L614.9 506.6C611.6 518.7 600.3 526.9 587.7 526.1L545.7 523.4C539.4 531.5 532.1 539 523.8 545.4L526.5 587.3C527.3 599.9 519.1 611.3 507 614.5L480.8 621.5C468.6 624.8 455.9 619 450.3 607.7L431.7 570.1C421.4 568.7 411.3 565.9 401.8 562L366.8 585.3C356.3 592.3 342.4 590.9 333.5 582L314.3 562.8C305.4 553.9 304 540 311 529.5L334.3 494.5C332.4 489.8 330.7 484.9 329.3 479.8C327.9 474.7 327 469.6 326.3 464.6L288.6 446C277.3 440.4 271.6 427.6 274.8 415.5L281.8 389.3C285.1 377.2 296.4 369 309 369.8L350.9 372.5C357.2 364.4 364.5 356.9 372.8 350.5L370.1 308.7C369.3 296.1 377.5 284.7 389.6 281.5L415.8 274.5zM448.4 404C424.1 404 404.4 423.7 404.5 448.1C404.5 472.4 424.2 492 448.5 492C472.8 492 492.5 472.3 492.5 448C492.4 423.6 472.7 404 448.4 404zM224.9 18.5L251.1 25.5C263.2 28.8 271.4 40.2 270.6 52.7L267.9 94.5C276.2 100.9 283.5 108.3 289.8 116.5L331.8 113.8C344.3 113 355.7 121.2 359 133.3L366 159.5C369.2 171.6 363.5 184.4 352.2 190L314.5 208.6C313.8 213.7 312.8 218.8 311.5 223.8C310.2 228.8 308.4 233.8 306.5 238.5L329.8 273.5C336.8 284 335.4 297.9 326.5 306.8L307.3 326C298.4 334.9 284.5 336.3 274 329.3L239 306C229.5 309.9 219.4 312.7 209.1 314.1L190.5 351.7C184.9 363 172.1 368.7 160 365.5L133.8 358.5C121.6 355.2 113.5 343.8 114.3 331.3L117 289.4C108.7 283 101.4 275.6 95.1 267.4L53.1 270.1C40.6 270.9 29.2 262.7 25.9 250.6L18.9 224.4C15.7 212.3 21.4 199.5 32.7 193.9L70.4 175.3C71.1 170.2 72.1 165.2 73.4 160.1C74.8 155 76.4 150.1 78.4 145.4L55.1 110.5C48.1 100 49.5 86.1 58.4 77.2L77.6 58C86.5 49.1 100.4 47.7 110.9 54.7L145.9 78C155.4 74.1 165.5 71.3 175.8 69.9L194.4 32.3C200 21 212.7 15.3 224.9 18.5zM192.4 148C168.1 148 148.4 167.7 148.4 192C148.4 216.3 168.1 236 192.4 236C216.7 236 236.4 216.3 236.4 192C236.4 167.7 216.7 148 192.4 148z"/>
+                      </svg>
+                      <svg *ngIf="result.id === 'seo'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="seo-icon" [attr.fill]="getCardColor(result)">
+                        <path d="M256 144C256 117.5 277.5 96 304 96L336 96C362.5 96 384 117.5 384 144L384 496C384 522.5 362.5 544 336 544L304 544C277.5 544 256 522.5 256 496L256 144zM64 336C64 309.5 85.5 288 112 288L144 288C170.5 288 192 309.5 192 336L192 496C192 522.5 170.5 544 144 544L112 544C85.5 544 64 522.5 64 496L64 336zM496 160L528 160C554.5 160 576 181.5 576 208L576 496C576 522.5 554.5 544 528 544L496 544C469.5 544 448 522.5 448 496L448 208C448 181.5 469.5 160 496 160z"/>
+                      </svg>
+                      </div>
+                    </ng-template>
                     <h3 class="card-name">
                       {{ result.title }}
                     </h3>
@@ -273,7 +301,35 @@ interface CachedAuditData {
         <div class="modal-content" (click)="$event.stopPropagation()">
           <div class="modal-header">
             <div class="modal-title">
-              <span class="modal-icon">{{ selectedResult()?.icon }}</span>
+              <div class="modal-icon" [style.color]="getModalIconColor(selectedResult())">
+                <div *ngIf="selectedResult()?.id !== 'ssl' && selectedResult()?.id !== 'headers' && selectedResult()?.id !== 'js-libraries' && selectedResult()?.id !== 'web-vulnerabilities' && selectedResult()?.id !== 'cookies' && selectedResult()?.id !== 'dependencies' && selectedResult()?.id !== 'backend-scan' && selectedResult()?.id !== 'seo'; else modalCustomIconTemplate">{{ selectedResult()?.icon }}</div>
+                <ng-template #modalCustomIconTemplate>
+                  <svg *ngIf="selectedResult()?.id === 'ssl'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="ssl-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'headers'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="headers-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M320 64C324.6 64 329.2 65 333.4 66.9L521.8 146.8C543.8 156.1 560.2 177.8 560.1 204C559.6 303.2 518.8 484.7 346.5 567.2C329.8 575.2 310.4 575.2 293.7 567.2C121.3 484.7 80.6 303.2 80.1 204C80 177.8 96.4 156.1 118.4 146.8L306.7 66.9C310.9 65 315.4 64 320 64zM320 130.8L320 508.9C458 442.1 495.1 294.1 496 205.5L320 130.9L320 130.9z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'js-libraries'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="js-libraries-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M480 576L192 576C139 576 96 533 96 480L96 160C96 107 139 64 192 64L496 64C522.5 64 544 85.5 544 112L544 400C544 420.9 530.6 438.7 512 445.3L512 512C529.7 512 544 526.3 544 544C544 561.7 529.7 576 512 576L480 576zM192 448C174.3 448 160 462.3 160 480C160 497.7 174.3 512 192 512L448 512L448 448L192 448zM224 216C224 229.3 234.7 240 248 240L424 240C437.3 240 448 229.3 448 216C448 202.7 437.3 192 424 192L248 192C234.7 192 224 202.7 224 216zM248 288C234.7 288 224 298.7 224 312C224 325.3 234.7 336 248 336L424 336C437.3 336 448 325.3 448 312C448 298.7 437.3 288 424 288L248 288z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'web-vulnerabilities'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="vulnerabilities-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M525.2 82.9C536.7 88 544 99.4 544 112L544 528C544 540.6 536.7 552 525.2 557.1C513.7 562.2 500.4 560.3 490.9 552L444.3 511.3C400.7 473.2 345.6 451 287.9 448.3L287.9 544C287.9 561.7 273.6 576 255.9 576L223.9 576C206.2 576 191.9 561.7 191.9 544L191.9 448C121.3 448 64 390.7 64 320C64 249.3 121.3 192 192 192L276.5 192C338.3 191.8 397.9 169.3 444.4 128.7L491 88C500.4 79.7 513.9 77.8 525.3 82.9zM288 384L288 384.2C358.3 386.9 425.8 412.7 480 457.6L480 182.3C425.8 227.2 358.3 253 288 255.7L288 384z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'cookies'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="cookies-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M311.2 81C289.1 77.9 266.6 81.9 246.8 92.4L172.8 131.9C153.1 142.4 137.2 158.9 127.4 179L90.7 254.6C80.9 274.7 77.7 297.5 81.6 319.5L96.1 402.3C100 424.4 110.7 444.6 126.8 460.2L187.1 518.6C203.2 534.2 223.7 544.2 245.8 547.3L328.8 559C350.9 562.1 373.4 558.1 393.2 547.6L467.2 508.1C486.9 497.6 502.8 481.1 512.6 460.9L549.3 385.4C559.1 365.3 562.3 342.5 558.4 320.5L543.8 237.7C539.9 215.6 529.2 195.4 513.1 179.8L452.9 121.5C436.8 105.9 416.3 95.9 394.2 92.8L311.2 81zM272 208C289.7 208 304 222.3 304 240C304 257.7 289.7 272 272 272C254.3 272 240 257.7 240 240C240 222.3 254.3 208 272 208zM208 400C208 382.3 222.3 368 240 368C257.7 368 272 382.3 272 400C272 417.7 257.7 432 240 432C222.3 432 208 417.7 208 400zM432 336C449.7 336 464 350.3 464 368C464 385.7 449.7 400 432 400C414.3 400 400 385.7 400 368C400 350.3 414.3 336 432 336z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'dependencies'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="dependencies-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M296.5 69.2C311.4 62.3 328.6 62.3 343.5 69.2L562.1 170.2C570.6 174.1 576 182.6 576 192C576 201.4 570.6 209.9 562.1 213.8L343.5 314.8C328.6 321.7 311.4 321.7 296.5 314.8L77.9 213.8C69.4 209.8 64 201.3 64 192C64 182.7 69.4 174.1 77.9 170.2L296.5 69.2zM112.1 282.4L276.4 358.3C304.1 371.1 336 371.1 363.7 358.3L528 282.4L562.1 298.2C570.6 302.1 576 310.6 576 320C576 329.4 570.6 337.9 562.1 341.8L343.5 442.8C328.6 449.7 311.4 449.7 296.5 442.8L77.9 341.8C69.4 337.8 64 329.3 64 320C64 310.7 69.4 302.1 77.9 298.2L112 282.4zM77.9 426.2L112 410.4L276.3 486.3C304 499.1 335.9 499.1 363.6 486.3L527.9 410.4L562 426.2C570.5 430.1 575.9 438.6 575.9 448C575.9 457.4 570.5 465.9 562 469.8L343.4 570.8C328.5 577.7 311.3 577.7 296.4 570.8L77.9 469.8C69.4 465.8 64 457.3 64 448C64 438.7 69.4 430.1 77.9 426.2z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'backend-scan'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="backend-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M415.9 274.5C428.1 271.2 440.9 277 446.4 288.3L465 325.9C475.3 327.3 485.4 330.1 494.9 334L529.9 310.7C540.4 303.7 554.3 305.1 563.2 314L582.4 333.2C591.3 342.1 592.7 356.1 585.7 366.5L562.4 401.4C564.3 406.1 566 411 567.4 416.1C568.8 421.2 569.7 426.2 570.4 431.3L608.1 449.9C619.4 455.5 625.2 468.3 621.9 480.4L614.9 506.6C611.6 518.7 600.3 526.9 587.7 526.1L545.7 523.4C539.4 531.5 532.1 539 523.8 545.4L526.5 587.3C527.3 599.9 519.1 611.3 507 614.5L480.8 621.5C468.6 624.8 455.9 619 450.3 607.7L431.7 570.1C421.4 568.7 411.3 565.9 401.8 562L366.8 585.3C356.3 592.3 342.4 590.9 333.5 582L314.3 562.8C305.4 553.9 304 540 311 529.5L334.3 494.5C332.4 489.8 330.7 484.9 329.3 479.8C327.9 474.7 327 469.6 326.3 464.6L288.6 446C277.3 440.4 271.6 427.6 274.8 415.5L281.8 389.3C285.1 377.2 296.4 369 309 369.8L350.9 372.5C357.2 364.4 364.5 356.9 372.8 350.5L370.1 308.7C369.3 296.1 377.5 284.7 389.6 281.5L415.8 274.5zM448.4 404C424.1 404 404.4 423.7 404.5 448.1C404.5 472.4 424.2 492 448.5 492C472.8 492 492.5 472.3 492.5 448C492.4 423.6 472.7 404 448.4 404zM224.9 18.5L251.1 25.5C263.2 28.8 271.4 40.2 270.6 52.7L267.9 94.5C276.2 100.9 283.5 108.3 289.8 116.5L331.8 113.8C344.3 113 355.7 121.2 359 133.3L366 159.5C369.2 171.6 363.5 184.4 352.2 190L314.5 208.6C313.8 213.7 312.8 218.8 311.5 223.8C310.2 228.8 308.4 233.8 306.5 238.5L329.8 273.5C336.8 284 335.4 297.9 326.5 306.8L307.3 326C298.4 334.9 284.5 336.3 274 329.3L239 306C229.5 309.9 219.4 312.7 209.1 314.1L190.5 351.7C184.9 363 172.1 368.7 160 365.5L133.8 358.5C121.6 355.2 113.5 343.8 114.3 331.3L117 289.4C108.7 283 101.4 275.6 95.1 267.4L53.1 270.1C40.6 270.9 29.2 262.7 25.9 250.6L18.9 224.4C15.7 212.3 21.4 199.5 32.7 193.9L70.4 175.3C71.1 170.2 72.1 165.2 73.4 160.1C74.8 155 76.4 150.1 78.4 145.4L55.1 110.5C48.1 100 49.5 86.1 58.4 77.2L77.6 58C86.5 49.1 100.4 47.7 110.9 54.7L145.9 78C155.4 74.1 165.5 71.3 175.8 69.9L194.4 32.3C200 21 212.7 15.3 224.9 18.5zM192.4 148C168.1 148 148.4 167.7 148.4 192C148.4 216.3 168.1 236 192.4 236C216.7 236 236.4 216.3 236.4 192C236.4 167.7 216.7 148 192.4 148z"/>
+                  </svg>
+                  <svg *ngIf="selectedResult()?.id === 'seo'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="seo-icon" [attr.fill]="getModalIconColor(selectedResult())">
+                    <path d="M256 144C256 117.5 277.5 96 304 96L336 96C362.5 96 384 117.5 384 144L384 496C384 522.5 362.5 544 336 544L304 544C277.5 544 256 522.5 256 496L256 144zM64 336C64 309.5 85.5 288 112 288L144 288C170.5 288 192 309.5 192 336L192 496C192 522.5 170.5 544 144 544L112 544C85.5 544 64 522.5 64 496L64 336zM496 160L528 160C554.5 160 576 181.5 576 208L576 496C576 522.5 554.5 544 528 544L496 544C469.5 544 448 522.5 448 496L448 208C448 181.5 469.5 160 496 160z"/>
+                  </svg>
+                </ng-template>
+              </div>
               <h3>{{ selectedResult()?.title }}</h3>
             </div>
             <button class="modal-close" (click)="closeModal()">×</button>
@@ -620,7 +676,119 @@ interface CachedAuditData {
     }
 
     .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.5rem;
+      background: var(--primary-light);
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    /* Mode sombre : icônes grises */
+    [data-theme="dark"] .card-icon {
+      color: #111827 !important;
+    }
+
+    [data-theme="dark"] .card-icon svg {
+      fill: #111827 !important;
+    }
+
+    [data-theme="dark"] .card-icon svg path {
+      fill: #111827 !important;
+    }
+    
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .ssl-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .headers-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .js-libraries-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .vulnerabilities-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .cookies-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .dependencies-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .backend-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+    
+    .seo-icon {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* Mode sombre : toutes les icônes SVG spécifiques */
+    [data-theme="dark"] .ssl-icon,
+    [data-theme="dark"] .headers-icon,
+    [data-theme="dark"] .js-libraries-icon,
+    [data-theme="dark"] .vulnerabilities-icon,
+    [data-theme="dark"] .cookies-icon,
+    [data-theme="dark"] .dependencies-icon,
+    [data-theme="dark"] .backend-icon,
+    [data-theme="dark"] .seo-icon {
+      fill: #111827 !important;
+    }
+
+    [data-theme="dark"] .ssl-icon path,
+    [data-theme="dark"] .headers-icon path,
+    [data-theme="dark"] .js-libraries-icon path,
+    [data-theme="dark"] .vulnerabilities-icon path,
+    [data-theme="dark"] .cookies-icon path,
+    [data-theme="dark"] .dependencies-icon path,
+    [data-theme="dark"] .backend-icon path,
+    [data-theme="dark"] .seo-icon path {
+      fill: #111827 !important;
+    }
+
+    /* Force la couleur sur tous les SVG en mode sombre */
+    [data-theme="dark"] svg {
+      fill: #111827 !important;
+    }
+
+    [data-theme="dark"] svg path {
+      fill: #111827 !important;
+    }
+
+    [data-theme="dark"] svg * {
+      fill: #111827 !important;
     }
 
     .card-name {
@@ -844,6 +1012,14 @@ interface CachedAuditData {
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
       animation: iconFloat 3s ease-in-out infinite;
     }
+
+    .modal-icon svg {
+      width: 2.5rem;
+      height: 2.5rem;
+      fill: currentColor;
+    }
+
+    /* Les couleurs des icônes du modal sont maintenant gérées par getModalIconColor() */
     
     .modal-title h3 {
       margin: 0;
@@ -1110,6 +1286,52 @@ interface CachedAuditData {
         opacity: 1;
         transform: translateY(0) scale(1) rotateX(0deg);
       }
+    }
+
+    /* Mode sombre pour le modal */
+    [data-theme="dark"] .modal-content {
+      background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .modal-header {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .modal-title h3 {
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .modal-close {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .modal-close:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .modal-score-section {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="dark"] .detail-item {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    [data-theme="dark"] .modal-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
     }
     
     @keyframes iconFloat {
@@ -1385,6 +1607,13 @@ export class AuditsComponent {
   
   // Signal pour le chargement de l'audit des cookies détaillé
   isCookieAuditLoading = signal(false);
+
+  // Méthode pour générer l'icône SSL SVG
+  getSslIcon(): string {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" style="width: 24px; height: 24px; fill: black;">
+      <path d="M256 160L256 224L384 224L384 160C384 124.7 355.3 96 320 96C284.7 96 256 124.7 256 160zM192 224L192 160C192 89.3 249.3 32 320 32C390.7 32 448 89.3 448 160L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224z"/>
+    </svg>`;
+  }
   
   // Signal pour le chargement de l'audit des dépendances détaillé
   isDependencyAuditLoading = signal(false);
@@ -1404,13 +1633,65 @@ export class AuditsComponent {
   constructor(private http: HttpClient) {
     // Charger l'historique des audits depuis le localStorage au démarrage
     this.loadAuditHistoryFromStorage();
+    
+    // Écouter les changements de thème
+    this.setupThemeListener();
+  }
+
+  private setupThemeListener() {
+    // Observer les changements d'attribut sur document.documentElement
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          // Forcer la détection de changement dans Angular
+          setTimeout(() => {
+            // Déclencher la détection de changement
+            this.onThemeChange();
+          }, 0);
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+  }
+
+  getCardColor(result: any): string {
+    // Détecter le mode sombre
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    if (isDarkMode) {
+      return '#111827';
+    } else {
+      return 'currentColor';
+    }
+  }
+
+  getModalIconColor(result: any): string {
+    // Détecter le mode sombre
+    const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+    
+    if (isDarkMode) {
+      return '#ffffff'; // Blanc en mode sombre
+    } else {
+      return '#111827'; // Gris foncé en mode clair
+    }
+  }
+
+  // Méthode pour forcer la mise à jour des couleurs lors du changement de thème
+  onThemeChange() {
+    // Cette méthode sera appelée quand le thème change
+    // Elle force la détection de changement dans Angular
+    return this.getCardColor({});
   }
 
   private mockResults: AuditResult[] = [
     {
       id: 'ssl',
       title: 'Certificat SSL',
-      icon: '🔒',
+      icon: this.getSslIcon(),
       score: 95,
       status: 'good',
       summary: 'Le certificat SSL est valide et correctement configuré avec un chiffrement fort.',
@@ -1503,20 +1784,6 @@ export class AuditsComponent {
         'Le pilote de base de données nécessite une mise à jour',
         'La bibliothèque d\'authentification est sécurisée',
         '2 correctifs de sécurité mineurs disponibles'
-      ]
-    },
-    {
-      id: 'vulnerable-versions',
-      title: 'Versions Vulnérables',
-      icon: '⚠️',
-      score: 52,
-      status: 'critical',
-      summary: 'Plusieurs composants exécutant des versions vulnérables nécessitent des mises à jour.',
-      details: [
-        'Node.js 14.x a atteint la fin de vie',
-        'React 16.x a des problèmes de sécurité connus',
-        'Webpack 4.x nécessite une mise à niveau vers v5',
-        'La version de la base de données a des correctifs de sécurité'
       ]
     },
     {
@@ -3120,7 +3387,7 @@ export class AuditsComponent {
     results.push({
       id: 'ssl',
       title: 'Certificat SSL',
-      icon: '🔒',
+      icon: this.getSslIcon(),
       score: sslScore,
       status: sslStatus,
       summary: sslSummary,
@@ -3424,23 +3691,7 @@ export class AuditsComponent {
       details: backendDetails
     });
 
-    // 8. Vulnerable Versions (GARDÉ de votre page originale)
-    results.push({
-      id: 'vulnerable-versions',
-      title: 'Vulnerable Versions',
-      icon: '⚠️',
-      score: 52,
-      status: 'critical',
-      summary: 'Multiple components running vulnerable versions require updates.',
-      details: [
-        'Node.js 14.x has reached end of life',
-        'React 16.x has known security issues',
-        'Webpack 4.x needs upgrade to v5',
-        'Database version has security patches'
-      ]
-    });
-
-    // 9. SEO Audit - Utilise les vraies données du backend
+    // 8. SEO Audit - Utilise les vraies données du backend
     console.log('📊 [AUDIT COMPONENT] Traitement des données SEO:', {
       seoScore: backendData.seoScore,
       seoDetails: backendData.seoDetails,

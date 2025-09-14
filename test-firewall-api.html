@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Firewall</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .firewall-info { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .status { padding: 4px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+        .status-enabled { background: #d4edda; color: #155724; }
+        .status-disabled { background: #f8d7da; color: #721c24; }
+        .status-partial { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test API Firewall</h1>
+        
+        <div class="test-section">
+            <h3>Test API Firewall Analysis</h3>
+            <input type="url" id="url" placeholder="https://www.google.com" value="https://www.google.com" style="width: 300px; padding: 8px; margin-right: 10px;">
+            <button onclick="testFirewallAPI()">Tester l'analyse de pare-feu</button>
+            <div id="firewall-result"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testFirewallAPI() {
+            const url = document.getElementById('url').value;
+            const result = document.getElementById('firewall-result');
+            result.innerHTML = '<p>Test en cours...</p>';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/firewall/analyze?url=${encodeURIComponent(url)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayFirewallResults(data);
+            } catch (error) {
+                console.error('Error:', error);
+                result.innerHTML = `
+                    <div class="error">
+                        <p>❌ Erreur: ${error.message}</p>
+                        <p><strong>Vérifiez que :</strong></p>
+                        <ul>
+                            <li>Le serveur backend est démarré sur le port 8080</li>
+                            <li>L'API /api/firewall/analyze est accessible</li>
+                            <li>Il n'y a pas de problème de CORS</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayFirewallResults(data) {
+            const result = document.getElementById('firewall-result');
+            
+            const statusClass = `status-${data.status.toLowerCase()}`;
+            
+            result.innerHTML = `
+                <div class="success">
+                    <h4>✅ Analyse de pare-feu réussie !</h4>
+                    <div class="firewall-info">
+                        <div><strong>Composant:</strong> ${data.component}</div>
+                        <div><strong>Statut:</strong> <span class="status ${statusClass}">${data.status}</span></div>
+                        <div><strong>Type:</strong> ${data.type}</div>
+                        <div><strong>Message:</strong> ${data.message}</div>
+                    </div>
+                    
+                    ${data.detectedHeaders ? `
+                        <div class="firewall-info">
+                            <strong>Headers détectés:</strong>
+                            <ul>
+                                ${Object.entries(data.detectedHeaders).map(([key, value]) => 
+                                    `<li><strong>${key}:</strong> ${value}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="firewall-info">
+                        <strong>Tests de sécurité:</strong>
+                        <div>Requête normale: ${data.normalStatus}</div>
+                        <div>Requête d'attaque: ${data.attackStatus}</div>
+                    </div>
+                    
+                    <details>
+                        <summary>Réponse JSON complète</summary>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </details>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

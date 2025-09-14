@@ -32,19 +32,6 @@ interface Site {
           <h1>Gestion des Sites</h1>
           <p>{{ summary?.total ?? sites.length }} sites surveillés • {{ summary?.active ?? getSitesActifs() }} actifs</p>
         </div>
-        <div class="header-actions">
-          <button class="btn btn-secondary" (click)="exporterSites()">
-            <span>📁</span>
-            Exporter
-          </button>
-          <div class="quick-audit">
-            <input type="text" class="quick-input" placeholder="Entrer une URL (ex: https://github.com)" [(ngModel)]="urlSaisie">
-            <button class="btn btn-primary" (click)="ajouterEtAuditer()">
-              <span>🔍</span>
-              Auditer
-            </button>
-          </div>
-        </div>
       </div>
 
       <!-- Filtres et recherche -->
@@ -338,22 +325,6 @@ interface Site {
       margin: 0;
     }
 
-    .header-actions {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .quick-audit { display: flex; gap: 0.5rem; }
-    .quick-input {
-      width: 360px;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 0.375rem;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.875rem;
-    }
 
     .filters-section {
       background-color: var(--bg-primary);
@@ -880,7 +851,6 @@ export class ListeSitesComponent implements OnInit {
   };
 
   summary: { total?: number; active?: number } | null = null;
-  urlSaisie = '';
   sites: Site[] = [];
   sitesFiltres: Site[] = [];
 
@@ -1039,58 +1009,7 @@ export class ListeSitesComponent implements OnInit {
     }
   }
 
-  exporterSites() {
-    let params = new HttpParams();
-    if (this.filtres.recherche) params = params.set('q', this.filtres.recherche);
-    if (this.filtres.statut) params = params.set('status', this.mapStatutLabel(this.filtres.statut));
-    if (this.filtres.scoreMin) params = params.set('minScore', this.filtres.scoreMin);
-    this.http.get(`/api/websites/export`, { params, responseType: 'blob' }).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'websites.csv';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        const msg = err?.error?.error || err?.error || "Erreur lors de l'export CSV";
-        alert(msg);
-      }
-    });
-  }
 
-  ajouterEtAuditer() {
-    const url = (this.urlSaisie || '').trim();
-    if (!url) { alert('Veuillez entrer une URL'); return; }
-    const body: any = { url, name: this.extraireNom(url) };
-    this.http.post<any>('/api/websites', body).subscribe({
-      next: (created) => {
-        const siteId = created?.id;
-        if (!siteId) { this.chargerSummary(); this.chargerListe(); return; }
-        this.http.get(`/api/audits/launch/${siteId}`).subscribe({
-          next: (auditResult: any) => {
-            const vulns = auditResult?.vulnerabilitiesCount || 0;
-            const alerts = auditResult?.alertsCount || 0;
-            alert(`Site créé et audité!\nVulnérabilités détectées: ${vulns}\nAlertes non lues: ${alerts}`);
-            this.urlSaisie = '';
-            this.chargerSummary();
-            this.chargerListe();
-          },
-          error: (err) => {
-            const msg = err?.error?.error || err?.error || "Erreur lors du lancement de l'audit";
-            alert(msg);
-            this.chargerSummary();
-            this.chargerListe();
-          }
-        });
-      },
-      error: (err) => {
-        const msg = err?.error?.error || err?.error || "Impossible d'ajouter le site";
-        alert(msg);
-      }
-    });
-  }
 
   private chargerSummary() {
     this.http.get<any>('/api/websites/summary').subscribe({
